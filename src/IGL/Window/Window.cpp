@@ -41,13 +41,13 @@ namespace igl {
 
         glViewport(0, 0, width, height);
 
-        mEvents.setWindow(mWindow);
+        mEvents.attachWindow(mWindow);
     }
 
 
 
     Window::~Window() {
-        mEvents.removeWindow();
+        mEvents.detachWindow();
         glfwDestroyWindow(mWindow);
     }
 
@@ -102,6 +102,10 @@ namespace igl {
 
     Event Window::waitEvent() {
         return mEvents.waitEvent();
+    }
+
+    Event Window::waitEvent(double timeoutSeconds) {
+        return mEvents.waitEvent(timeoutSeconds);
     }
 
 

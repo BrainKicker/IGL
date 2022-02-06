@@ -93,14 +93,14 @@ namespace igl {
 
 
     Events::~Events() {
-        removeWindow();
+        detachWindow();
     }
 
 
 
-    void Events::setWindow(GLFWwindow* window) {
+    void Events::attachWindow(GLFWwindow* window) {
 
-        removeWindow();
+        detachWindow();
 
         mWindow = window;
 
@@ -124,7 +124,7 @@ namespace igl {
         glfwSetWindowContentScaleCallback(window, windowContentScaleCallback);
     }
 
-    void Events::removeWindow() {
+    void Events::detachWindow() {
 
         if (mWindow == nullptr)
             return;
@@ -169,8 +169,10 @@ namespace igl {
     Event Events::pollEvent() {
         if (mWindow == nullptr)
             return { Event::NO_EVENT };
-        glfwMakeContextCurrent(mWindow);
-        glfwPollEvents();
+        if (mEvents.empty()) {
+            glfwMakeContextCurrent(mWindow);
+            glfwPollEvents();
+        }
         if (mEvents.empty())
             return { Event::NO_EVENT };
         return pop(mEvents);
@@ -179,8 +181,22 @@ namespace igl {
     Event Events::waitEvent() {
         if (mWindow == nullptr)
             return { Event::NO_EVENT };
-        glfwMakeContextCurrent(mWindow);
-        glfwWaitEvents();
+        if (mEvents.empty()) {
+            glfwMakeContextCurrent(mWindow);
+            glfwWaitEvents();
+        }
+        return pop(mEvents);
+    }
+
+    Event Events::waitEvent(double timeoutSeconds) {
+        if (mWindow == nullptr)
+            return { Event::NO_EVENT };
+        if (mEvents.empty()) {
+            glfwMakeContextCurrent(mWindow);
+            glfwWaitEventsTimeout(timeoutSeconds);
+        }
+        if (mEvents.empty())
+            return { Event::NO_EVENT };
         return pop(mEvents);
     }
 }

@@ -17,12 +17,13 @@ namespace igl {
 
         ~Events();
 
-        void setWindow(GLFWwindow* window);
-        void removeWindow();
+        void attachWindow(GLFWwindow* window);
+        void detachWindow();
 
         void pushEvent(const Event& event);
 
         Event pollEvent();
         Event waitEvent();
+        Event waitEvent(double timeoutSeconds);
     };
 }

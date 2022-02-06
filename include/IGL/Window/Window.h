@@ -49,6 +49,7 @@ namespace igl {
 
         Event pollEvent();
         Event waitEvent();
+        Event waitEvent(double timeoutSeconds);
 
         void handleEvent(const Event& event);
     };

@@ -4,20 +4,20 @@
 namespace igl {
 
 
-    static std::map<GLFWwindow*,Events*> sMap;
+    static std::map<GLFWwindow*,Events*> sEventsMap;
 
 
     void registerEvents(GLFWwindow* window, Events* events) {
-        sMap[window] = events;
+        sEventsMap[window] = events;
     }
 
     void unregisterEvents(GLFWwindow* window) {
-        sMap.erase(window);
+        sEventsMap.erase(window);
     }
 
 
     void callback(GLFWwindow* window, const instantiator<Event>& eventGen) {
-        Events* events = sMap[window];
+        Events* events = sEventsMap[window];
         if (events == nullptr)
             return;
         events->pushEvent(eventGen());
@@ -86,6 +86,7 @@ namespace igl {
         callback(window, [&]() {
             return Event{ Event::WindowContentScale, { .windowContentScale = { x, y } } }; });
     }
+
 
 
     Events::Events() {}

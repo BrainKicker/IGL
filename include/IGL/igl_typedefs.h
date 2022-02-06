@@ -42,4 +42,7 @@ namespace igl {
 
     template <typename T>
     using comparator = std::function<bool(const T&,const T&)>;
+
+    template <typename T>
+    using instantiator = std::function<T()>;
 }

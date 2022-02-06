@@ -4,6 +4,7 @@
 
 #include <IGL/System.h>
 
+#include <IGL/Window/Events/Event.h>
 #include <IGL/Window/Events/Events.h>
 
 namespace igl {
@@ -48,5 +49,7 @@ namespace igl {
 
         Event pollEvent();
         Event waitEvent();
+
+        void handleEvent(const Event& event);
     };
 }

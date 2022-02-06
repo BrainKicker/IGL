@@ -16,7 +16,7 @@ namespace igl {
     }
 
 
-    void callback(GLFWwindow* window, const std::function<Event()>& eventGen) {
+    void callback(GLFWwindow* window, const instantiator<Event>& eventGen) {
         Events* events = sMap[window];
         if (events == nullptr)
             return;

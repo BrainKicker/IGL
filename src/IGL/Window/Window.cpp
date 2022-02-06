@@ -103,4 +103,17 @@ namespace igl {
     Event Window::waitEvent() {
         return mEvents.waitEvent();
     }
+
+
+
+    void Window::handleEvent(const Event& event) {
+        switch (event.type) {
+            case Event::Closed:
+                setShouldClose(true);
+                break;
+            // TODO other cases
+            default:
+                break;
+        }
+    }
 }

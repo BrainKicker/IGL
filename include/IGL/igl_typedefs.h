@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <functional>
 
 namespace igl {
 
@@ -38,4 +39,7 @@ namespace igl {
 
     template <typename T>
     using ref = std::reference_wrapper<T>;
+
+    template <typename T>
+    using comparator = std::function<bool(const T&,const T&)>;
 }

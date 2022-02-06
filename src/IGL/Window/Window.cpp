@@ -80,7 +80,7 @@ namespace igl {
 
 
 
-    bool Window::isShouldClose() const {
+    bool Window::shouldClose() const {
         return glfwWindowShouldClose(mWindow);
     }
 

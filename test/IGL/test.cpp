@@ -3,7 +3,7 @@
 int main() {
     std::cout << "Hello, World!\n";
     igl::Window window(1000, 500, "Window");
-    while (!window.isShouldClose()) {
+    while (!window.shouldClose()) {
         igl::Event event = window.pollEvent();
         switch (event.type) {
             case igl::Event::Closed:

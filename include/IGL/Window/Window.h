@@ -41,7 +41,7 @@ namespace igl {
 
         GLFWwindow* getGLFWwindow();
 
-        bool isShouldClose() const;
+        bool shouldClose() const;
         void setShouldClose(bool flag);
 
         void requestFocus() const;

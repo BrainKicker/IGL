@@ -7,6 +7,12 @@
 namespace igl {
 
 
+    class ShaderCreationException : public MessageException {
+    public:
+        ShaderCreationException(const std::string& message) : MessageException(message) {}
+    };
+
+
     class Shader {
 
         uint mId = GL_NONE;
@@ -17,12 +23,7 @@ namespace igl {
 
     public:
 
-        class ShaderCreationException : public MessageException {
-        public:
-            ShaderCreationException(const std::string& message) : MessageException(message) {}
-        };
-
-        explicit Shader(uint id = GL_NONE);
+        Shader(const std::string& vertexFilename, const std::string& fragmentFilename);
         Shader(Shader&& other);
 
         ~Shader();

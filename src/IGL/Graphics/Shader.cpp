@@ -17,7 +17,9 @@ namespace igl {
 
 
 
-    Shader::Shader(uint id) : mId(id) {}
+    Shader::Shader(const std::string& vertexFilename, const std::string& fragmentFilename) {
+        load(vertexFilename, fragmentFilename);
+    }
 
     Shader::Shader(Shader&& other) : mId(other.mId) {
         other.mId = GL_NONE;

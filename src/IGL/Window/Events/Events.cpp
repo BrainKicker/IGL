@@ -162,6 +162,7 @@ namespace igl {
     Event Events::pollEvent() {
         if (mWindow == nullptr)
             return { Event::NO_EVENT };
+        glfwMakeContextCurrent(mWindow);
         glfwPollEvents();
         if (mEvents.empty())
             return { Event::NO_EVENT };
@@ -173,6 +174,7 @@ namespace igl {
     Event Events::waitEvent() {
         if (mWindow == nullptr)
             return { Event::NO_EVENT };
+        glfwMakeContextCurrent(mWindow);
         glfwWaitEvents();
         Event event = mEvents.front();
         mEvents.pop();

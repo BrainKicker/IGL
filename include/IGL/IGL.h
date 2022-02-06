@@ -1,4 +1,5 @@
 #pragma once
 
-#include "System.h"
-#include "Window.h"
+#include <IGL/System.h>
+#include <IGL/Window.h>
+#include <IGL/Graphics.h>

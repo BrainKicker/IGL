@@ -10,6 +10,7 @@ int main() {
                 window.setShouldClose(true);
                 break;
             default:
+                window.handleEvent(event);
                 break;
         }
     }

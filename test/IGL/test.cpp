@@ -1,0 +1,16 @@
+#include "IGL/IGL.h"
+
+int main() {
+    std::cout << "Hello, World!\n";
+    igl::Window window(1000, 500, "Window");
+    while (!window.isShouldClose()) {
+        igl::Event event = window.pollEvent();
+        switch (event.type) {
+            case igl::Event::Closed:
+                window.setShouldClose(true);
+                break;
+            default:
+                break;
+        }
+    }
+}

@@ -159,6 +159,13 @@ namespace igl {
 
 
 
+    template <typename T>
+    T pop(std::queue<T>& q) {
+        T t = q.front();
+        q.pop();
+        return t;
+    }
+
     Event Events::pollEvent() {
         if (mWindow == nullptr)
             return { Event::NO_EVENT };
@@ -166,9 +173,7 @@ namespace igl {
         glfwPollEvents();
         if (mEvents.empty())
             return { Event::NO_EVENT };
-        Event event = mEvents.front();
-        mEvents.pop();
-        return event;
+        return pop(mEvents);
     }
 
     Event Events::waitEvent() {
@@ -176,8 +181,6 @@ namespace igl {
             return { Event::NO_EVENT };
         glfwMakeContextCurrent(mWindow);
         glfwWaitEvents();
-        Event event = mEvents.front();
-        mEvents.pop();
-        return event;
+        return pop(mEvents);
     }
 }

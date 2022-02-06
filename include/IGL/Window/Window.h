@@ -10,9 +10,9 @@
 namespace igl {
 
 
-    class WindowCreationException : public MessageException {
+    class WindowCreationException : public std::runtime_error {
     public:
-        WindowCreationException(const std::string& message = "") : MessageException(message) {}
+        WindowCreationException(const std::string& message = "") : std::runtime_error(message) {}
     };
 
 

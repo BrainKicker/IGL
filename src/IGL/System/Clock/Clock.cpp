@@ -1,3 +1,4 @@
+#include <IGL/Config/Compile.h>
 #include <IGL/System/Clock/Clock.h>
 
 
@@ -65,11 +66,11 @@ namespace igl {
 
 
 
-    float Clock::elapsedSecondsFloat(bool refresh) {
+    float Clock::elapsedSecondsF(bool refresh) {
         return ((float) elapsedNanos(refresh)) / 1000000000.0f;
     }
 
-    double Clock::elapsedSecondsDouble(bool refresh) {
+    double Clock::elapsedSecondsD(bool refresh) {
         return ((double) elapsedNanos(refresh)) / 1000000000.0;
     }
 }

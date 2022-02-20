@@ -1,26 +1,15 @@
+#include <IGL/Config/Compile.h>
 #include <IGL/Window/Window.h>
 
 
 namespace igl {
 
 
-    void Window::setCursorMode(int mode) const {
-        glfwSetInputMode(mWindow, GLFW_CURSOR, mode);
-    }
-
-
-
-    void Window::swapBuffers() const {
-        glfwSwapBuffers(mWindow);
-    }
-
-
-
-    Window::Window(int width, int height, const std::string& title)
-            : mWidth(width), mHeight(height), mTitle(title) {
+    Window::Window(int width, int height, const std::string& title) throws(igl::WindowCreationException)
+    : mWidth(width), mHeight(height), mTitle(title) {
 
         if (glfwInit() != GLFW_TRUE)
-            throw WindowCreationException("Failed to init GLFW");
+            throw WindowCreationError("Failed to initialize GLFW");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -29,26 +18,43 @@ namespace igl {
 
         mWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
-        if (mWindow == nullptr)
-            throw WindowCreationException("Failed to create window");
-
-        requestFocus();
+        if (mWindow == nullptr) {
+            destroy();
+            throw WindowCreationError("Failed to create window");
+        }
 
         glewExperimental = true;
 
-        if (glewInit() != GLEW_OK)
-            throw WindowCreationException("Failed to initialize GLEW");
+        if (glewInit() != GLEW_OK) {
+            destroy();
+            throw WindowCreationError("Failed to initialize GLEW");
+        }
 
-        glViewport(0, 0, width, height);
+        requestFocus();
 
-        mEvents.attachWindow(mWindow);
+        glEnable(GL_DEPTH_TEST);
+
+        mEvents.attachWindow(this);
     }
 
 
 
     Window::~Window() {
+        destroy();
+    }
+
+
+
+    GLFWwindow* Window::getGLFWwindow() {
+        return mWindow;
+    }
+
+
+
+    void Window::destroy() {
         mEvents.detachWindow();
         glfwDestroyWindow(mWindow);
+        mWindow = nullptr;
     }
 
 
@@ -74,24 +80,32 @@ namespace igl {
 
 
 
-    GLFWwindow* Window::getGLFWwindow() {
-        return mWindow;
+    sptr<View> Window::getView() const {
+        return mView;
+    }
+
+    void Window::setView(const sptr<View>& view) {
+        mView = view;
     }
 
 
 
-    bool Window::shouldClose() const {
-        return glfwWindowShouldClose(mWindow);
+    bool Window::isOpen() const {
+        return !glfwWindowShouldClose(mWindow);
     }
 
-    void Window::setShouldClose(bool flag) {
-        glfwSetWindowShouldClose(mWindow, flag);
+    void Window::close() const {
+        glfwSetWindowShouldClose(mWindow, GLFW_TRUE);
     }
 
 
 
-    void Window::requestFocus() const {
-        glfwMakeContextCurrent(mWindow);
+    void Window::setCursorMode(CursorMode mode) const {
+        glfwSetInputMode(mWindow, GLFW_CURSOR, (int) mode);
+    }
+
+    Window::CursorMode Window::getCursorMode() const {
+        return (CursorMode) glfwGetInputMode(mWindow, GLFW_CURSOR);
     }
 
 
@@ -113,11 +127,44 @@ namespace igl {
     void Window::handleEvent(const Event& event) {
         switch (event.type) {
             case Event::Closed:
-                setShouldClose(true);
+                close();
                 break;
             // TODO other cases
             default:
                 break;
+        }
+    }
+
+
+
+    void Window::clear(const Color& color) const {
+        requestFocus();
+        glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+
+
+    void Window::requestFocus() const {
+        glfwMakeContextCurrent(mWindow);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, mWidth, mHeight);
+    }
+
+
+
+    void Window::draw() {
+        requestFocus();
+        if (mView != nullptr)
+            glBlitFramebuffer(0, 0, mView->getWidth(), mView->getHeight(), 0, 0, mWidth, mHeight, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        mDrawn = true;
+    }
+
+
+
+    void Window::display() {
+        if (mDrawn) {
+            glfwSwapBuffers(mWindow);
+            mDrawn = false;
         }
     }
 }

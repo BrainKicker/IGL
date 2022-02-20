@@ -1,23 +1,31 @@
 #pragma once
 
-#include <IGL/igl_compile_includes.h>
+#include <IGL/Config.h>
 
 #include <IGL/Window/Events/Event.h>
 
+#include <queue>
+
+
 namespace igl {
+
+
+    // pre-declaration
+    class Window;
+
 
     class Events {
 
-        GLFWwindow* mWindow = nullptr;
+        Window* mWindow = nullptr;
         std::queue<Event> mEvents;
 
     public:
 
-        Events();
+        Events() = default;
 
         ~Events();
 
-        void attachWindow(GLFWwindow* window);
+        void attachWindow(Window* window);
         void detachWindow();
 
         void pushEvent(const Event& event);

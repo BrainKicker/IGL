@@ -1,4 +1,7 @@
+#include <IGL/Config/Compile.h>
 #include <IGL/Window/Events/Events.h>
+
+#include <IGL/Window/Window.h>
 
 
 namespace igl {
@@ -16,7 +19,7 @@ namespace igl {
     }
 
 
-    void callback(GLFWwindow* window, const instantiator<Event>& eventGen) {
+    void callback(GLFWwindow* window, const Instantiator<Event>& eventGen) {
         Events* events = sEventsMap[window];
         if (events == nullptr)
             return;
@@ -61,7 +64,7 @@ namespace igl {
             return Event{ Event::FrameBufferSize, { .frameBufferSize = { width, height } } }; });
     }
     void windowCloseCallback(GLFWwindow* window) {
-        callback(window, [&]() { return Event{ Event::Closed }; });
+        callback(window, [&]() { return Event{ Event::Closed, {} }; });
     }
     void windowFocusCallback(GLFWwindow* window, int focused) {
         callback(window, [&]() {
@@ -80,16 +83,12 @@ namespace igl {
             return Event{ Event::WindowMove, { .windowPos = { x, y } } }; });
     }
     void windowRefreshCallback(GLFWwindow* window) {
-        callback(window, [&]() { return Event{ Event::WindowRefresh }; });
+        callback(window, [&]() { return Event{ Event::WindowRefresh, {} }; });
     }
     void windowContentScaleCallback(GLFWwindow* window, float x, float y) {
         callback(window, [&]() {
             return Event{ Event::WindowContentScale, { .windowContentScale = { x, y } } }; });
     }
-
-
-
-    Events::Events() {}
 
 
 
@@ -99,30 +98,32 @@ namespace igl {
 
 
 
-    void Events::attachWindow(GLFWwindow* window) {
+    void Events::attachWindow(Window* window) {
 
         detachWindow();
 
         mWindow = window;
 
-        registerEvents(window, this);
+        GLFWwindow* glfwWindow = window->getGLFWwindow();
 
-        glfwSetKeyCallback(window, keyCallback);
-        glfwSetCharCallback(window, charCallback);
-        glfwSetCharModsCallback(window, charModsCallback);
-        glfwSetScrollCallback(window, scrollCallback);
-        glfwSetWindowSizeCallback(window, windowSizeCallback);
-        glfwSetMouseButtonCallback(window, mouseButtonCallback);
-        glfwSetCursorPosCallback(window, cursorPosCallback);
-        glfwSetCursorEnterCallback(window, cursorEnterCallback);
-        glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
-        glfwSetWindowCloseCallback(window, windowCloseCallback);
-        glfwSetWindowFocusCallback(window, windowFocusCallback);
-        glfwSetWindowIconifyCallback(window, windowIconifyCallback);
-        glfwSetWindowMaximizeCallback(window, windowMaximizeCallback);
-        glfwSetWindowPosCallback(window, windowPosCallback);
-        glfwSetWindowRefreshCallback(window, windowRefreshCallback);
-        glfwSetWindowContentScaleCallback(window, windowContentScaleCallback);
+        registerEvents(glfwWindow, this);
+
+        glfwSetKeyCallback(glfwWindow, keyCallback);
+        glfwSetCharCallback(glfwWindow, charCallback);
+        glfwSetCharModsCallback(glfwWindow, charModsCallback);
+        glfwSetScrollCallback(glfwWindow, scrollCallback);
+        glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
+        glfwSetMouseButtonCallback(glfwWindow, mouseButtonCallback);
+        glfwSetCursorPosCallback(glfwWindow, cursorPosCallback);
+        glfwSetCursorEnterCallback(glfwWindow, cursorEnterCallback);
+        glfwSetFramebufferSizeCallback(glfwWindow, frameBufferSizeCallback);
+        glfwSetWindowCloseCallback(glfwWindow, windowCloseCallback);
+        glfwSetWindowFocusCallback(glfwWindow, windowFocusCallback);
+        glfwSetWindowIconifyCallback(glfwWindow, windowIconifyCallback);
+        glfwSetWindowMaximizeCallback(glfwWindow, windowMaximizeCallback);
+        glfwSetWindowPosCallback(glfwWindow, windowPosCallback);
+        glfwSetWindowRefreshCallback(glfwWindow, windowRefreshCallback);
+        glfwSetWindowContentScaleCallback(glfwWindow, windowContentScaleCallback);
     }
 
     void Events::detachWindow() {
@@ -130,24 +131,26 @@ namespace igl {
         if (mWindow == nullptr)
             return;
 
-        unregisterEvents(mWindow);
+        GLFWwindow* glfWwindow = mWindow->getGLFWwindow();
 
-        glfwSetKeyCallback(mWindow, nullptr);
-        glfwSetCharCallback(mWindow, nullptr);
-        glfwSetCharModsCallback(mWindow, nullptr);
-        glfwSetScrollCallback(mWindow, nullptr);
-        glfwSetWindowSizeCallback(mWindow, nullptr);
-        glfwSetMouseButtonCallback(mWindow, nullptr);
-        glfwSetCursorPosCallback(mWindow, nullptr);
-        glfwSetCursorEnterCallback(mWindow, nullptr);
-        glfwSetFramebufferSizeCallback(mWindow, nullptr);
-        glfwSetWindowCloseCallback(mWindow, nullptr);
-        glfwSetWindowFocusCallback(mWindow, nullptr);
-        glfwSetWindowIconifyCallback(mWindow, nullptr);
-        glfwSetWindowMaximizeCallback(mWindow, nullptr);
-        glfwSetWindowPosCallback(mWindow, nullptr);
-        glfwSetWindowRefreshCallback(mWindow, nullptr);
-        glfwSetWindowContentScaleCallback(mWindow, nullptr);
+        unregisterEvents(glfWwindow);
+
+        glfwSetKeyCallback(glfWwindow, nullptr);
+        glfwSetCharCallback(glfWwindow, nullptr);
+        glfwSetCharModsCallback(glfWwindow, nullptr);
+        glfwSetScrollCallback(glfWwindow, nullptr);
+        glfwSetWindowSizeCallback(glfWwindow, nullptr);
+        glfwSetMouseButtonCallback(glfWwindow, nullptr);
+        glfwSetCursorPosCallback(glfWwindow, nullptr);
+        glfwSetCursorEnterCallback(glfWwindow, nullptr);
+        glfwSetFramebufferSizeCallback(glfWwindow, nullptr);
+        glfwSetWindowCloseCallback(glfWwindow, nullptr);
+        glfwSetWindowFocusCallback(glfWwindow, nullptr);
+        glfwSetWindowIconifyCallback(glfWwindow, nullptr);
+        glfwSetWindowMaximizeCallback(glfWwindow, nullptr);
+        glfwSetWindowPosCallback(glfWwindow, nullptr);
+        glfwSetWindowRefreshCallback(glfWwindow, nullptr);
+        glfwSetWindowContentScaleCallback(glfWwindow, nullptr);
 
         mWindow = nullptr;
     }
@@ -169,21 +172,21 @@ namespace igl {
 
     Event Events::pollEvent() {
         if (mWindow == nullptr)
-            return { Event::NO_EVENT };
+            return { Event::NO_EVENT, {} };
         if (mEvents.empty()) {
-            glfwMakeContextCurrent(mWindow);
+            glfwMakeContextCurrent(mWindow->getGLFWwindow());
             glfwPollEvents();
         }
         if (mEvents.empty())
-            return { Event::NO_EVENT };
+            return { Event::NO_EVENT, {} };
         return pop(mEvents);
     }
 
     Event Events::waitEvent() {
         if (mWindow == nullptr)
-            return { Event::NO_EVENT };
+            return { Event::NO_EVENT, {} };
         if (mEvents.empty()) {
-            glfwMakeContextCurrent(mWindow);
+            glfwMakeContextCurrent(mWindow->getGLFWwindow());
             glfwWaitEvents();
         }
         return pop(mEvents);
@@ -191,13 +194,13 @@ namespace igl {
 
     Event Events::waitEvent(double timeoutSeconds) {
         if (mWindow == nullptr)
-            return { Event::NO_EVENT };
+            return { Event::NO_EVENT, {} };
         if (mEvents.empty()) {
-            glfwMakeContextCurrent(mWindow);
+            glfwMakeContextCurrent(mWindow->getGLFWwindow());
             glfwWaitEventsTimeout(timeoutSeconds);
         }
         if (mEvents.empty())
-            return { Event::NO_EVENT };
+            return { Event::NO_EVENT, {} };
         return pop(mEvents);
     }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IGL/igl_compile_includes.h"
+#include <IGL/Config.h>
 
 
 namespace igl {
@@ -20,11 +20,11 @@ namespace igl {
             int mods;
         };
 
-        struct CharEvent {
+        struct SymbolEvent {
             uint32 unicode;
         };
 
-        struct CharModsEvent {
+        struct SymbolModsEvent {
             uint32 unicode;
             int mods;
         };
@@ -111,8 +111,8 @@ namespace igl {
         union {
             SizeEvent size;
             KeyEvent key;
-            CharEvent symbol;
-            CharModsEvent symbolMods;
+            SymbolEvent symbol;
+            SymbolModsEvent symbolMods;
             MouseMoveEvent mouseMove;
             MouseButtonEvent mouseButton;
             JoystickEvent joystick;

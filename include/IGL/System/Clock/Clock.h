@@ -1,6 +1,8 @@
 #pragma once
 
-#include <IGL/igl_compile_includes.h>
+#include <IGL/Config.h>
+
+#include <chrono>
 
 
 namespace igl {
@@ -25,7 +27,7 @@ namespace igl {
         long elapsedMicros(bool refresh = true);
         long elapsedNanos(bool refresh = true);
 
-        float elapsedSecondsFloat(bool refresh = true);
-        double elapsedSecondsDouble(bool refresh = true);
+        float elapsedSecondsF(bool refresh = true);
+        double elapsedSecondsD(bool refresh = true);
     };
 }

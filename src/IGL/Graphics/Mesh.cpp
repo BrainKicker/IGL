@@ -1,18 +1,25 @@
-#include <IGL/Graphics/Mesh.h>
+#include <IGL/Config/Compile.h>
+#include <IGL/Graphics/LowLevel/Mesh.h>
 
 namespace igl {
 
 
-    void Mesh::glDelete() {
-        glDeleteVertexArrays(1, &mVAO);
+    void Mesh::genVBO() {
+        if (mVBO != GL_NONE)
+            return;
+        glGenBuffers(1, &mVBO);
+    }
+
+    void Mesh::deleteVBO() {
         glDeleteBuffers(1, &mVBO);
+        mVBO = GL_NONE;
     }
 
 
 
-    Mesh::Mesh() {}
+    Mesh::Mesh() : mVAO(GL_NONE), mVBO(GL_NONE), mVerticesCount(0) {}
 
-    Mesh::Mesh(const float* buffer, uint verticesCount, const int* attrs) {
+    Mesh::Mesh(const float* buffer, int verticesCount, const int* attrs) {
         create(buffer, verticesCount, attrs);
     }
 
@@ -24,14 +31,14 @@ namespace igl {
 
 
     Mesh::~Mesh() {
-        glDelete();
+        destroy();
     }
 
 
 
     Mesh& Mesh::operator=(Mesh&& other) {
 
-        glDelete();
+        destroy();
 
         mVAO = other.mVAO;
         mVBO = other.mVBO;
@@ -44,35 +51,43 @@ namespace igl {
 
 
 
-    void Mesh::draw(uint primitive) const {
-        glBindVertexArray(mVAO);
-        glDrawArrays(primitive, 0, mVerticesCount);
-        glBindVertexArray(GL_NONE);
+    PrimitiveType Mesh::getPrimitiveType() const {
+        return mPrimitiveType;
+    }
+
+    void Mesh::setPrimitiveType(PrimitiveType primitiveType) {
+        mPrimitiveType = primitiveType;
     }
 
 
 
-    void Mesh::create(const float* buffer, uint verticesCount, const int* attrs) {
+    int Mesh::getVerticesCount() const {
+        return mVerticesCount;
+    }
 
-        glDelete();
+
+
+    void Mesh::create(const float* buffer, int verticesCount, const int* attrs) {
+
+        destroy(false);
 
         mVerticesCount = verticesCount;
 
-        int vertex_size = 0;
+        int vertexSize = 0;
         for (int i = 0; attrs[i]; ++i)
-            vertex_size += attrs[i];
+            vertexSize += attrs[i];
 
         glGenVertexArrays(1, &mVAO);
-        glGenBuffers(1, &mVBO);
+        genVBO();
 
         glBindVertexArray(mVAO);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size * verticesCount, buffer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexSize * verticesCount, buffer, GL_STATIC_DRAW);
 
         // attributes
         for (int i = 0, offset = 0; attrs[i]; ++i) {
             int size = attrs[i];
-            glVertexAttribPointer(i, size, GL_FLOAT, false, vertex_size * sizeof(float),
+            glVertexAttribPointer(i, size, GL_FLOAT, false, vertexSize * sizeof(float),
                                   (void*)(offset * sizeof(float)));
             glEnableVertexAttribArray(i);
             offset += size;
@@ -80,5 +95,29 @@ namespace igl {
 
         glBindVertexArray(GL_NONE);
         glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+    }
+
+
+
+    void Mesh::destroy(bool deleteBuff) {
+        glDeleteVertexArrays(1, &mVAO);
+        mVAO = GL_NONE;
+        if (deleteBuff)
+            deleteVBO();
+        mVerticesCount = 0;
+    }
+
+
+    void Mesh::draw() const {
+        draw(mPrimitiveType);
+    }
+
+    void Mesh::draw(PrimitiveType primitiveType) const {
+        draw(0, mVerticesCount, primitiveType);
+    }
+
+    void Mesh::draw(int from, int count, PrimitiveType primitiveType) const {
+        glBindVertexArray(mVAO);
+        glDrawArrays((GLenum) primitiveType, from, count);
     }
 }

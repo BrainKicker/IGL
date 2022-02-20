@@ -1,10 +1,10 @@
-#pragma once
+#include <IGL/Config/Includes.h>
 
 #include <cstdint>
-#include <memory>
-#include <functional>
+
 
 namespace igl {
+
 
     using byte = int8_t;
 
@@ -24,11 +24,13 @@ namespace igl {
     using uint64 = uint64_t;
 
     using float4 = float;
-    using float16 = float4;
+    using float32 = float4;
     using float8 = double;
     using float64 = float8;
     using float10 = long double;
     using float80 = float10;
+
+#ifdef IGL_INCLUDE_STL
 
     template <typename T>
     using uptr = std::unique_ptr<T>;
@@ -41,8 +43,12 @@ namespace igl {
     using ref = std::reference_wrapper<T>;
 
     template <typename T>
-    using comparator = std::function<bool(const T&,const T&)>;
+    using Comparator = std::function<bool(const T&, const T&)>;
 
     template <typename T>
-    using instantiator = std::function<T()>;
+    using Instantiator = std::function<T()>;
+
+    using Functor = std::function<void()>;
+
+#endif // IGL_INCLUDE_STL
 }

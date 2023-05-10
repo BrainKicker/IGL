@@ -23,6 +23,9 @@ namespace igl {
             throw WindowCreationError("Failed to create window");
         }
 
+        // for glewInit
+        glfwMakeContextCurrent(mWindow);
+
         glewExperimental = true;
 
         if (glewInit() != GLEW_OK) {

@@ -3,8 +3,7 @@
 #include <IGL/Config.h>
 
 #include <IGL/System/Throwable/Exception/ExceptionWithStackTrace.h>
-#include "IGL/Graphics/RenderTarget.h"
-
+#include <IGL/Graphics/RenderTarget.h>
 
 
 namespace igl {
@@ -46,7 +45,7 @@ namespace igl {
 
             void bind() const;
 
-            void draw(const Mesh &mesh) const override;
+            void draw(const Mesh& mesh) const override;
         };
     }
 

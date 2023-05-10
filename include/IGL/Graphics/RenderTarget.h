@@ -2,11 +2,13 @@
 
 #include <IGL/Config.h>
 
-// pre-declaration
-class Mesh;
 
 
 namespace igl {
+
+
+    // pre-declaration
+    class Mesh;
 
 
     // abstract

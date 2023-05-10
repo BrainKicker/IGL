@@ -11,6 +11,7 @@ namespace igl {
     class Clock {
 
         timespec mTime;
+        bool mIsPaused = false;
 
     public:
 

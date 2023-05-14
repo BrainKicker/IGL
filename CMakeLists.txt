@@ -27,6 +27,7 @@ set_project_directories(include src test res lib out)
 # LIBRARY
 set(LIBRARY_NAME ${CMAKE_PROJECT_NAME})
 add_library(${CMAKE_PROJECT_NAME} ${HEADERS} ${SOURCE_FILES})
+#add_library(${CMAKE_PROJECT_NAME} SHARED ${HEADERS} ${SOURCE_FILES})
 
 
 # EXECUTABLE

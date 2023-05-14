@@ -21,7 +21,7 @@ include(CMakeLogic.cmake)
 
 
 # DIRECTORIES
-set_project_directories(include src test res out)
+set_project_directories(include src test res lib out)
 
 
 # LIBRARY

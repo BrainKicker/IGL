@@ -36,8 +36,8 @@ add_executable(${EXECUTABLE_NAME} ${HEADERS} ${SOURCE_FILES} ${TEST_FILES})
 
 
 # LIBRARIES
+find_libraries(LIBRARIES gl opengl glfw3 glew ${CMAKE_DL_LIBS} SOIL boost_system)
 # libs for lib
-auto_target_link_libraries(${LIBRARY_NAME} gl opengl glfw3 glew ${CMAKE_DL_LIBS} SOIL boost_system)
-
+target_link_libraries(${LIBRARY_NAME} PRIVATE ${LIBRARIES})
 # libs for exe
-auto_target_link_libraries(${EXECUTABLE_NAME} gl opengl glfw3 glew ${CMAKE_DL_LIBS} SOIL boost_system)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${LIBRARIES})

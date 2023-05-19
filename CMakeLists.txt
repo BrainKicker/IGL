@@ -26,13 +26,13 @@ set_project_directories(include src test res include lib out)
 
 # LIBRARY
 set(LIBRARY_NAME ${CMAKE_PROJECT_NAME})
-add_library(${CMAKE_PROJECT_NAME} ${HEADERS} ${SOURCE_FILES})
+add_library(${CMAKE_PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 #add_library(${CMAKE_PROJECT_NAME} SHARED ${HEADERS} ${SOURCE_FILES})
 
 
 # EXECUTABLE
 set(EXECUTABLE_NAME TEST)
-add_executable(${EXECUTABLE_NAME} ${HEADERS} ${SOURCE_FILES} ${TEST_FILES})
+add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${TEST_FILES})
 
 
 # LIBRARIES
